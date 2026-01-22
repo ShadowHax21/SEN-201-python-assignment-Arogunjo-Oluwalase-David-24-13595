@@ -38,7 +38,6 @@ Architecture: Console-based application
 Modules:
 
 · password_generator.py - Main logic
-· cli.py - Command-line interface
 
 Data Structures:
 
