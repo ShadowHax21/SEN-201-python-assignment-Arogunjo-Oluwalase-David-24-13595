@@ -1,117 +1,107 @@
+import random
 import secrets
 import string
 import pyperclip
-import sys
 
-def generate_password(length=16, use_upper=True, use_lower=True, use_digits=True, use_special=True):
-    """Generate a secure random password with specified character types"""
+class PasswordGenerator:
+    def __init__(self):
+        self.character_sets = {
+            'lowercase': string.ascii_lowercase,
+            'uppercase': string.ascii_uppercase,
+            'numbers': string.digits,
+            'special': string.punctuation
+        }
     
-    # Character sets
-    upper = string.ascii_uppercase if use_upper else ''
-    lower = string.ascii_lowercase if use_lower else ''
-    digits = string.digits if use_digits else ''
-    special = string.punctuation if use_special else ''
+    def generate_password(self, length=12, include_uppercase=True, 
+                         include_numbers=True, include_special=True):
+        """Generate a secure random password with specified criteria"""
+        
+        # Build character pool based on user preferences
+        char_pool = self.character_sets['lowercase']
+        
+        if include_uppercase:
+            char_pool += self.character_sets['uppercase']
+        if include_numbers:
+            char_pool += self.character_sets['numbers']
+        if include_special:
+            char_pool += self.character_sets['special']
+        
+        # Validate we have at least one character type
+        if not char_pool:
+            return "Error: No character types selected"
+        
+        # Generate password using cryptographically secure random
+        password = ''.join(secrets.choice(char_pool) for _ in range(length))
+        
+        return password
     
-    # Combine selected character sets
-    all_characters = upper + lower + digits + special
+    def generate_multiple(self, count=5, **kwargs):
+        """Generate multiple passwords with same criteria"""
+        return [self.generate_password(**kwargs) for _ in range(count)]
     
-    if not all_characters:
-        return "Error: No character types selected"
+    def copy_to_clipboard(self, password):
+        """Copy password to system clipboard"""
+        try:
+            pyperclip.copy(password)
+            return True
+        except:
+            return False
+
+def get_user_input():
+    """Get password preferences from user"""
+    print("Password Generator")
+    print("-" * 30)
     
-    # Ensure at least one character from each selected type
-    password = []
-    if use_upper:
-        password.append(secrets.choice(upper))
-    if use_lower:
-        password.append(secrets.choice(lower))
-    if use_digits:
-        password.append(secrets.choice(digits))
-    if use_special:
-        password.append(secrets.choice(special))
-    
-    # Fill the rest with random characters from all sets
-    remaining_length = length - len(password)
-    password.extend(secrets.choice(all_characters) for _ in range(remaining_length))
-    
-    # Shuffle to avoid predictable patterns
-    secrets.SystemRandom().shuffle(password)
-    
-    return ''.join(password)
+    try:
+        length = int(input("Password length (8-64): "))
+        length = max(8, min(64, length))
+        
+        include_uppercase = input("Include uppercase? (y/n): ").lower() == 'y'
+        include_numbers = input("Include numbers? (y/n): ").lower() == 'y'
+        include_special = input("Include special chars? (y/n): ").lower() == 'y'
+        
+        count = int(input("How many passwords to generate? (1-10): "))
+        count = max(1, min(10, count))
+        
+        return length, include_uppercase, include_numbers, include_special, count
+    except ValueError:
+        print("Invalid input. Using default values.")
+        return 12, True, True, True, 1
 
 def main():
-    print("=" * 50)
-    print("Secure Password Generator")
-    print("=" * 50)
+    """Main application function"""
+    generator = PasswordGenerator()
     
-    try:
-        # Get password count
-        while True:
-            try:
-                count = int(input("How many passwords to generate? (1-20): "))
-                if 1 <= count <= 20:
-                    break
-                print("Please enter a number between 1 and 20")
-            except ValueError:
-                print("Please enter a valid number")
+    # Get user preferences
+    length, include_uppercase, include_numbers, include_special, count = get_user_input()
+    
+    # Generate password(s)
+    if count == 1:
+        password = generator.generate_password(
+            length=length,
+            include_uppercase=include_uppercase,
+            include_numbers=include_numbers,
+            include_special=include_special
+        )
+        print(f"\nGenerated Password: {password}")
         
-        # Get password length
-        while True:
-            try:
-                length = int(input("Password length? (8-64): "))
-                if 8 <= length <= 64:
-                    break
-                print("Please enter a number between 8 and 64")
-            except ValueError:
-                print("Please enter a valid number")
-        
-        # Character type preferences
-        print("\nCharacter types to include:")
-        use_upper = input("Uppercase letters? (Y/n): ").lower() != 'n'
-        use_lower = input("Lowercase letters? (Y/n): ").lower() != 'n'
-        use_digits = input("Digits? (Y/n): ").lower() != 'n'
-        use_special = input("Special characters? (Y/n): ").lower() != 'n'
-        
-        print("\n" + "=" * 50)
-        print(f"Generating {count} password(s)...")
-        print("=" * 50)
-        
-        # Generate passwords
-        passwords = []
-        for i in range(count):
-            password = generate_password(length, use_upper, use_lower, use_digits, use_special)
-            passwords.append(password)
-            print(f"{i+1:2}. {password}")
-        
-        # Clipboard support
-        if passwords:
-            copy_choice = input(f"\nCopy password #1 to clipboard? (y/N): ").lower()
-            if copy_choice == 'y':
-                pyperclip.copy(passwords[0])
-                print("✓ Password copied to clipboard!")
-            
-            # Option to save all passwords to file
-            save_choice = input("\nSave all passwords to file? (y/N): ").lower()
-            if save_choice == 'y':
-                filename = input("Filename (default: passwords.txt): ") or "passwords.txt"
-                with open(filename, 'w') as f:
-                    for i, pwd in enumerate(passwords, 1):
-                        f.write(f"{i}. {pwd}\n")
-                print(f"✓ Passwords saved to {filename}")
-        
-    except KeyboardInterrupt:
-        print("\n\nOperation cancelled.")
-        sys.exit(0)
-    except Exception as e:
-        print(f"\nError: {e}")
+        # Copy to clipboard
+        if generator.copy_to_clipboard(password):
+            print("Password copied to clipboard!")
+    else:
+        passwords = generator.generate_multiple(
+            count=count,
+            length=length,
+            include_uppercase=include_uppercase,
+            include_numbers=include_numbers,
+            include_special=include_special
+        )
+        print(f"\nGenerated {count} passwords:")
+        for i, pwd in enumerate(passwords, 1):
+            print(f"{i}. {pwd}")
+    
+    print("\n" + "=" * 30)
+    print("Password generation complete!")
 
 if __name__ == "__main__":
-    # Install pyperclip if not available
-    try:
-        import pyperclip
-    except ImportError:
-        print("Installing required module: pyperclip")
-        import subprocess
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "pyperclip"])
-        import pyperclip
-    
     main()
