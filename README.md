@@ -1,4 +1,17 @@
-# SEN-201-python-assignment-Arogunjo-Oluwalase-David-24-13595
+# SEN-201-python-assignment
+*Name: Arogunjo-Oluwalase-David*
+
+*Matric Nō: 24/13595*
+
+*Department: Software Engineering (200 lvl)*
+
+*Course: Introduction to software engineering*
+
+*Course code: SEN 201*
+
+*Lecturer: Mr. Aregbesola*
+
+
 # Secure Password Generator
 
 A Python-based password generator with customizable options.
@@ -17,18 +30,18 @@ Project: Secure Password Generator
 
 Functional Requirements:
 
-· Generate random passwords
-· Customize password length
-· Include/exclude character types
-· Copy password to clipboard
-· Generate multiple passwords
+1. Generate random passwords
+2. Customize password length
+3. Include/exclude character types
+4. Copy password to clipboard
+5. Generate multiple passwords
 
 Non-Functional Requirements:
 
-· Secure random generation
-· User-friendly interface
-· Fast response time 
-· Cross-platform compatibility
+1. Secure random generation
+2. User-friendly interface
+3. Fast response time
+4. Cross-platform compatibility
 
 Stakeholders: End users, Security teams
 
@@ -37,20 +50,20 @@ Stakeholders: End users, Security teams
 Architecture: Console-based application
 Modules:
 
-· password_generator.py - Main logic
+- password_generator.py - Main logic
 
 Data Structures:
 
-· Strings for character sets
-· Lists for password storage
+- Strings for character sets
+- Lists for password storage
 
 Nomenclatures:
 
-· password_length - Length of password
-· include_uppercase - Boolean for uppercase
-· include_numbers - Boolean for numbers
-· include_special - Boolean for special chars
-· generated_password - Output password
+- password_length - Length of password
+- include_uppercase - Boolean for uppercase
+- include_numbers - Boolean for numbers
+- include_special - Boolean for special chars
+- generated_password - Output password
 
 3. IMPLEMENTATION
 
