@@ -27,7 +27,7 @@ Non-Functional Requirements:
 
 · Secure random generation
 · User-friendly interface
-· Fast response time
+· Fast response time 
 · Cross-platform compatibility
 
 Stakeholders: End users, Security teams
