@@ -113,9 +113,7 @@ Project Structure
 ```
 password-generator/
 ├── password_generator.py
-├── requirements.txt
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
 Note: All nomenclatures match between design and implementation as required.
